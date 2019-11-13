@@ -56,6 +56,22 @@ existing ranges of zip codes, they will be merged. The range of zip codes in whi
                 ]
             }
 
+The range to be added has to specify the numerically lower zip code first with both values not less than 501 (Holtsville, New York) and 
+not higher than 99950 (Ketchikan, AK). Example:
+
+        POST http://localhost:8080/zipcoderanges
+        
+        with body 
+        
+            {
+                "lowZipCode": 99999,
+                "highZipCode": 99998
+            }
+            
+        returns - 422
+        
+        "Invalid range of zip codes"
+
 Delete /zipcoderanges/{zipcode}   which will delete all existing zip code ranges. Example:
 
         DELETE http://localhost:8080/zipcoderanges
