@@ -1,7 +1,6 @@
 package com.williamssonoma.zipcoderanges.models;
 
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,7 +10,8 @@ import com.williamssonoma.zipcoderanges.exceptions.ValueNotVerifiedException;
 
 public class ZipCodeRange implements Comparable<ZipCodeRange> {
 	
-	private Integer[] range = {0,0};
+	private Integer lowZipCode;
+	private Integer highZipCode;
 	
 	private final Logger logger = LoggerFactory.getLogger(ZipCodeRange.class);
 
@@ -21,12 +21,12 @@ public class ZipCodeRange implements Comparable<ZipCodeRange> {
 	 */
 	public int compareTo(ZipCodeRange zipCodes) {
 		
-		if ((zipCodes.range[0] >= this.range[0] && zipCodes.range[0] <= this.range[1]	) 
+		if ((zipCodes.lowZipCode >= this.lowZipCode && zipCodes.lowZipCode <= this.highZipCode	) 
 			||
-			(zipCodes.range[1] >= this.range[0] && zipCodes.range[0] <= this.range[1]	)) {
+			(zipCodes.highZipCode >= this.lowZipCode && zipCodes.lowZipCode <= this.highZipCode	)) {
 			return 0;
 		} else {
-			if (zipCodes.range[0] < this.range[0]) {
+			if (zipCodes.lowZipCode < this.lowZipCode) {
 				return -1;
 			} else {
 				return 1;
@@ -43,31 +43,24 @@ public class ZipCodeRange implements Comparable<ZipCodeRange> {
 	 * @param highZip
 	 */
 	public ZipCodeRange(Integer lowZip, Integer highZip) {
+		logger.debug("New ZipCodeRange: " + lowZip + " : " + highZip);
 		
-		if (isZipValid(lowZip) && isZipValid(highZip) && lowZip <= highZip) {
-			this.range[0] = lowZip;
-			this.range[1] = highZip;
+		if (lowZip <= highZip) {
+			this.lowZipCode = lowZip;
+			this.highZipCode = highZip;
 		} else {
 			throw new ValueNotVerifiedException("Invalid range of zip codes");
 		}
 
 	}
 	
-	@Override
-	public String toString() {
-		return "ZipCodeRange [range=" + Arrays.toString(range) + "]";
+
+	public Integer getLowZipCode() {
+		return lowZipCode;
 	}
 
-	private boolean isZipValid(Integer zip) {
-		
-		logger.debug("isZipValid: " + zip);
-		
-		if (zip >= 501 && zip <= 99950) return true;
-		return false;
-	}
-	
-	public Integer[] getRange() {
-		return range;
+	public Integer getHighZipCode() {
+		return highZipCode;
 	}
 
 	/**
@@ -78,12 +71,12 @@ public class ZipCodeRange implements Comparable<ZipCodeRange> {
 	 */
 	public ZipCodeRange combineRanges(List<ZipCodeRange> zipCodeRanges) {
 		
-		int lowZip = range [0];
-		int highZip = range[1];
+		int lowZip = lowZipCode;
+		int highZip = highZipCode;
 		
 		for (ZipCodeRange zip : zipCodeRanges) {
-			if (zip.getRange()[0] < lowZip) lowZip = zip.getRange()[0];
-			if (zip.getRange()[1] > highZip) highZip = zip.getRange()[1];
+			if (zip.getLowZipCode() < lowZip) lowZip = zip.getLowZipCode();
+			if (zip.getHighZipCode() > highZip) highZip = zip.getHighZipCode();
 		}
 		
 		return new ZipCodeRange(lowZip, highZip);

@@ -1,12 +1,17 @@
 package com.williamssonoma.zipcoderanges.models;
 
-import org.springframework.stereotype.Component;
+import javax.validation.constraints.NotNull;
 
-@Component
+import com.williamssonoma.zipcoderanges.validation.ZipCode;
+
 public class SubmissionDTO {
 	
+	@NotNull(message="{zipcode.lowziprequired}")
+	@ZipCode(message="{zipcode.lowzipinvalid}")
 	private Integer lowZipCode;
     
+	@NotNull(message="{zipcode.highziprequired}")
+	@ZipCode(message="{zipcode.highzipinvalid}")
 	private Integer highZipCode;
 
 	public Integer getLowZipCode() {
@@ -24,6 +29,7 @@ public class SubmissionDTO {
 	public void setHighZipCode(Integer highZipCode) {
 		this.highZipCode = highZipCode;
 	}
+	
 	
 	public String toJson() {
 		
