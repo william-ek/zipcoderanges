@@ -42,16 +42,12 @@ Get /zipcoderanges which will return a json formatted object with ranges of zip 
 
             [
                 {
-                    "range": [
-                        10001,
-                        20000
-                    ]
+                    "lowZipCode": 10001,
+                    "highZipCode": 20000
                 },
                 {
-                    "range": [
-                        501,
-                        999
-                    ]
+                    "lowZipCode": 501,
+                    "highZipCode": 10000
                 }
             ]
 
@@ -81,10 +77,8 @@ existing ranges of zip codes, they will be merged. The range of zip codes in whi
         returns - 201
         
             {
-                "range": [
-                    501,
-                    20000
-                ]
+                "lowZipCode": 998,
+                "highZipCode": 10002
             }
 
 The range to be added has to specify the numerically lower zip code first with both values not less than 501 (Holtsville, New York) and 
