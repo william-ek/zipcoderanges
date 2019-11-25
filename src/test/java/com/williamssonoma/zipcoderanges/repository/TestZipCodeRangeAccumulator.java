@@ -1,7 +1,5 @@
 package com.williamssonoma.zipcoderanges.repository;
 
-
-
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -69,7 +67,7 @@ public class TestZipCodeRangeAccumulator {
 		
         exception.expect(NotFoundException.class);
 		
-		accumulator.getZipCodeRange("10000");
+		accumulator.getZipCodeRange("abcde");
 		
 		
 	}
