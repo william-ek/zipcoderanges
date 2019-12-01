@@ -1,13 +1,10 @@
 package com.williamssonoma.zipcoderanges.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,26 +18,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.williamssonoma.zipcoderanges.app.ZipcoderangesApplication;
+import com.williamssonoma.zipcoderanges.ZipcoderangesApplication;
 import com.williamssonoma.zipcoderanges.exceptions.NotFoundException;
 import com.williamssonoma.zipcoderanges.exceptions.ValueNotVerifiedException;
 import com.williamssonoma.zipcoderanges.models.SubmissionDTO;
 import com.williamssonoma.zipcoderanges.models.ZipCodeRange;
-import com.williamssonoma.zipcoderanges.repository.ZipCodeRangeAccumulator;
+import com.williamssonoma.zipcoderanges.repository.ZipCodeRangeRepository;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ZipcoderangesApplication.class)
 @SpringBootTest
 public class TestZipCodeService {
 	
-	Set<ZipCodeRange> set;
 	List<ZipCodeRange> list;
 	
 	@InjectMocks
 	ZipCodeService service;
 	
 	@Mock
-	private ZipCodeRangeAccumulator accumulator;
+	private ZipCodeRangeRepository repository;
 	
 	@Mock
 	private ZipCodeRange zipCodeRange;
@@ -53,13 +49,12 @@ public class TestZipCodeService {
 		
 		MockitoAnnotations.initMocks(this);
 		
-		set = new TreeSet<>();
+		list = new ArrayList<>();
 		
-		set.add(new ZipCodeRange(501, 625));
-		set.add(new ZipCodeRange(10000, 31006));
-		set.add(new ZipCodeRange(91000, 99950));
+		list.add(new ZipCodeRange(501, 625));
+		list.add(new ZipCodeRange(10000, 31006));
+		list.add(new ZipCodeRange(91000, 99950));
 		
-		list = new ArrayList<>(set);
 		
 	}
 	
@@ -69,7 +64,7 @@ public class TestZipCodeService {
 	@Test
 	public void getZipCodeRangesSucceeds() throws Exception {
 		
-		when(accumulator.getZipCodeRanges()).thenReturn(list);
+		when(repository.findAll()).thenReturn(list);
 		
         List<ZipCodeRange> zipList = service.getZipCodeRanges();
          
@@ -80,7 +75,7 @@ public class TestZipCodeService {
 	@Test
 	public void getZipCodeRangeSucceeds() throws Exception {
 		
-		when(accumulator.getZipCodeRange("10001")).thenReturn(new ZipCodeRange(10000, 31006));
+		when(repository.findByZipCode(new Integer(10001))).thenReturn(new ZipCodeRange(10000, 31006));
 		
         ZipCodeRange zipCodeRange = service.getZipCodeRange("10001");
          
@@ -92,7 +87,7 @@ public class TestZipCodeService {
 	@Test
 	public void getZipCodeRangeNotFound() throws Exception {
 		
-		when(accumulator.getZipCodeRange("32000")).thenThrow(new NotFoundException("Zip Code is not in a Range"));
+		when(repository.findByZipCode(new Integer(32000))).thenThrow(new NotFoundException("Zip Code is not in a Range"));
 		
         exception.expect(NotFoundException.class);
 		
@@ -101,9 +96,18 @@ public class TestZipCodeService {
 	}
 	
 	@Test
+	public void getZipCodeRangeNotValid() throws Exception {
+				
+        exception.expect(ValueNotVerifiedException.class);
+		
+        service.getZipCodeRange("abcde");
+        
+	}
+	
+	@Test
 	public void deleteZipCodeRangeSucceeds() throws Exception {
 		
-		when(accumulator.deleteZipCodeRanges()).thenReturn(new ArrayList<ZipCodeRange>());
+		when(repository.findAll()).thenReturn(new ArrayList<ZipCodeRange>());
 		
 		List<ZipCodeRange> zipList = service.deleteZipCodeRanges();
          
@@ -115,15 +119,15 @@ public class TestZipCodeService {
 	public void addZipCodeRangeSucceeds() throws Exception {
 		
 		submission = new SubmissionDTO();
-		submission.setLowZipCode(31005);
-		submission.setHighZipCode(35000);
+		submission.setLowZipCode(600);
+		submission.setHighZipCode(99900);
 		
-		when(accumulator.addZipCodeRange(any(ZipCodeRange.class))).thenReturn(new ZipCodeRange(10000, 35000));
+		when(repository.getZipCodeRanges(600, 99900)).thenReturn(list);
 		
 		ZipCodeRange newZips = service.addZipCodeRange(submission);
          
-        assertEquals(new Integer(10000), newZips.getLowZipCode());
-        assertEquals(new Integer(35000), newZips.getHighZipCode());
+        assertEquals(new Integer(501), newZips.getLowZipCode());
+        assertEquals(new Integer(99950), newZips.getHighZipCode());
         
 	}
 	
@@ -133,9 +137,7 @@ public class TestZipCodeService {
 		submission = new SubmissionDTO();
 		submission.setLowZipCode(35000);
 		submission.setHighZipCode(31000);
-		
-		when(accumulator.addZipCodeRange(any(ZipCodeRange.class))).thenThrow(new ValueNotVerifiedException("Values are not a valid zip code range"));
-		
+				
         exception.expect(ValueNotVerifiedException.class);
 		
         service.addZipCodeRange(submission);

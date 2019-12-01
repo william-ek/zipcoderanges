@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.williamssonoma.zipcoderanges.app.ZipcoderangesApplication;
+import com.williamssonoma.zipcoderanges.ZipcoderangesApplication;
 import com.williamssonoma.zipcoderanges.exceptions.NotFoundException;
 import com.williamssonoma.zipcoderanges.models.SubmissionDTO;
 import com.williamssonoma.zipcoderanges.models.ZipCodeRange;

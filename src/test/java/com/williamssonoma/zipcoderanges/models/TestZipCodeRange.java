@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.williamssonoma.zipcoderanges.app.ZipcoderangesApplication;
+import com.williamssonoma.zipcoderanges.ZipcoderangesApplication;
 import com.williamssonoma.zipcoderanges.exceptions.ValueNotVerifiedException;
 
 @RunWith(SpringRunner.class)

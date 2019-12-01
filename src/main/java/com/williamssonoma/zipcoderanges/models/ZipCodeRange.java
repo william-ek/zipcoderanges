@@ -1,39 +1,27 @@
 package com.williamssonoma.zipcoderanges.models;
 
-
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.williamssonoma.zipcoderanges.exceptions.ValueNotVerifiedException;
 
-public class ZipCodeRange implements Comparable<ZipCodeRange> {
+@Entity
+public class ZipCodeRange {
 	
+	@Id
+	@Column(name="LOW_ZIPCODE")
 	private Integer lowZipCode;
+	@Column(name="HIGH_ZIPCODE")
 	private Integer highZipCode;
 	
+	@Transient
 	private final Logger logger = LoggerFactory.getLogger(ZipCodeRange.class);
 
-	/**
-	 * We'll tell Map that two key objects are equal if there are any intersections. High and Low are determined by the
-	 * lower bound, using the higher bound other would work as well.
-	 */
-	public int compareTo(ZipCodeRange zipCodes) {
-		
-		if ((zipCodes.lowZipCode >= this.lowZipCode && zipCodes.lowZipCode <= this.highZipCode	) 
-			||
-			(zipCodes.highZipCode >= this.lowZipCode && zipCodes.lowZipCode <= this.highZipCode	)) {
-			return 0;
-		} else {
-			if (zipCodes.lowZipCode < this.lowZipCode) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-	}
-	
 
 	/**
 	 * Build this object with a range of valid zip codes. 
@@ -54,7 +42,9 @@ public class ZipCodeRange implements Comparable<ZipCodeRange> {
 
 	}
 	
-
+	public ZipCodeRange() {
+	}
+	
 	public Integer getLowZipCode() {
 		return lowZipCode;
 	}
@@ -63,25 +53,6 @@ public class ZipCodeRange implements Comparable<ZipCodeRange> {
 		return highZipCode;
 	}
 
-	/**
-	 * Create a union of this Object's range and the input Object's range. No rocket science here.
-	 * 
-	 * @param zipCodeRange
-	 * @return
-	 */
-	public ZipCodeRange combineRanges(List<ZipCodeRange> zipCodeRanges) {
-		
-		int lowZip = lowZipCode;
-		int highZip = highZipCode;
-		
-		for (ZipCodeRange zip : zipCodeRanges) {
-			if (zip.getLowZipCode() < lowZip) lowZip = zip.getLowZipCode();
-			if (zip.getHighZipCode() > highZip) highZip = zip.getHighZipCode();
-		}
-		
-		return new ZipCodeRange(lowZip, highZip);
-		
-	}
 
 }
 

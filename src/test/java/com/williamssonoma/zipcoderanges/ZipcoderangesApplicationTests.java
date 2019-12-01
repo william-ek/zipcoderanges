@@ -1,4 +1,4 @@
-package com.williamssonoma.zipcoderanges.app;
+package com.williamssonoma.zipcoderanges;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
