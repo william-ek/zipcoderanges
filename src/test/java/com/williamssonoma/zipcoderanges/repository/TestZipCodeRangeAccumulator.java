@@ -1,7 +1,5 @@
 package com.williamssonoma.zipcoderanges.repository;
 
-
-
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -13,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,6 +22,7 @@ import com.williamssonoma.zipcoderanges.models.ZipCodeRange;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ZipcoderangesApplication.class)
+@SpringBootTest
 public class TestZipCodeRangeAccumulator {
 	
 	@InjectMocks
@@ -57,8 +57,8 @@ public class TestZipCodeRangeAccumulator {
 		
 		ZipCodeRange zip = accumulator.getZipCodeRange("11000");
 		
-		assertEquals(new Integer(10001), zip.getRange()[0]);
-		assertEquals(new Integer(12000), zip.getRange()[1]);
+		assertEquals(new Integer(10001), zip.getLowZipCode());
+		assertEquals(new Integer(12000), zip.getHighZipCode());
 		
 	}
 	
@@ -67,7 +67,7 @@ public class TestZipCodeRangeAccumulator {
 		
         exception.expect(NotFoundException.class);
 		
-		accumulator.getZipCodeRange("10000");
+		accumulator.getZipCodeRange("abcde");
 		
 		
 	}
@@ -88,8 +88,8 @@ public class TestZipCodeRangeAccumulator {
 		
 		ZipCodeRange zip = accumulator.addZipCodeRange(zipCodeRange);
 		
-		assertEquals(new Integer(80001), zip.getRange()[0]);
-		assertEquals(new Integer(90000), zip.getRange()[1]);
+		assertEquals(new Integer(80001), zip.getLowZipCode());
+		assertEquals(new Integer(90000), zip.getHighZipCode());
 		
 	}
 	
@@ -97,10 +97,6 @@ public class TestZipCodeRangeAccumulator {
 	public void addZipCodeRangesNewRangeNotValid() {
 		
         exception.expect(ValueNotVerifiedException.class);
-		
-		zipCodeRange = new ZipCodeRange(99999, 99999);
-		
-		zipCodeRange = new ZipCodeRange(1, 1);
 		
 		zipCodeRange = new ZipCodeRange(662, 501);
 		
@@ -113,8 +109,8 @@ public class TestZipCodeRangeAccumulator {
 		
 		ZipCodeRange zip = accumulator.addZipCodeRange(zipCodeRange);
 		
-		assertEquals(new Integer(10001), zip.getRange()[0]);
-		assertEquals(new Integer(40000), zip.getRange()[1]);
+		assertEquals(new Integer(10001), zip.getLowZipCode());
+		assertEquals(new Integer(40000), zip.getHighZipCode());
 		
 	}
 	

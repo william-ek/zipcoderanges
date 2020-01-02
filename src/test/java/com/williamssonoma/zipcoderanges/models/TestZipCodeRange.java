@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,6 +16,7 @@ import com.williamssonoma.zipcoderanges.exceptions.ValueNotVerifiedException;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ZipcoderangesApplication.class)
+@SpringBootTest
 public class TestZipCodeRange {
 	
 	@Mock

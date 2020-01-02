@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.williamssonoma.zipcoderanges.exceptions.NotFoundException;
@@ -15,6 +16,9 @@ import com.williamssonoma.zipcoderanges.models.ZipCodeRangeMap;
 public class ZipCodeRangeAccumulator {
 	
 	private static final ZipCodeRangeMap zipCodeMap = new ZipCodeRangeMap();
+	
+	@Value("${zip.notfound}")
+	public String notFoundMessage;
 
 	
 	/**
@@ -36,12 +40,17 @@ public class ZipCodeRangeAccumulator {
 	 */
 	public ZipCodeRange getZipCodeRange(String zipCode) {
 		
-		Integer searchZipCode = Integer.parseInt(zipCode);
+		Integer searchZipCode;
+		try {
+			searchZipCode = Integer.parseInt(zipCode);
+		} catch (NumberFormatException e) {
+			throw new NotFoundException(notFoundMessage);
+		}
 		ZipCodeRange searchZipCodeRange = new ZipCodeRange(searchZipCode, searchZipCode);
 		ZipCodeRange zipCodeRange = zipCodeMap.get(searchZipCodeRange);
 		
 		if (zipCodeRange == null) {
-			throw new NotFoundException("Zip code is not in a range");
+			throw new NotFoundException(notFoundMessage);
 		}
 		
 		return zipCodeRange;

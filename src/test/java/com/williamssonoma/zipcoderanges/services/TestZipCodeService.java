@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,6 +30,7 @@ import com.williamssonoma.zipcoderanges.repository.ZipCodeRangeAccumulator;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ZipcoderangesApplication.class)
+@SpringBootTest
 public class TestZipCodeService {
 	
 	Set<ZipCodeRange> set;
@@ -82,8 +84,8 @@ public class TestZipCodeService {
 		
         ZipCodeRange zipCodeRange = service.getZipCodeRange("10001");
          
-        assertEquals(new Integer(10000), zipCodeRange.getRange()[0]);
-        assertEquals(new Integer(31006), zipCodeRange.getRange()[1]);
+        assertEquals(new Integer(10000), zipCodeRange.getLowZipCode());
+        assertEquals(new Integer(31006), zipCodeRange.getHighZipCode());
 		
 	}
 	
@@ -120,8 +122,8 @@ public class TestZipCodeService {
 		
 		ZipCodeRange newZips = service.addZipCodeRange(submission);
          
-        assertEquals(new Integer(10000), newZips.getRange()[0]);
-        assertEquals(new Integer(35000), newZips.getRange()[1]);
+        assertEquals(new Integer(10000), newZips.getLowZipCode());
+        assertEquals(new Integer(35000), newZips.getHighZipCode());
         
 	}
 	
